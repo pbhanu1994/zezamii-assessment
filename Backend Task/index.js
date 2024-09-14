@@ -6,6 +6,12 @@ app.use(express.json());
 let users = [];
 let userId = 1;
 
+// Middleware to log the HTTP method and URL path
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Input validation middleware
 const validateUser = (req, res, next) => {
   const { name, email } = req.body;
