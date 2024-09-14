@@ -16,3 +16,11 @@ CREATE TABLE Customers (
     Email NVARCHAR(100),
     Phone NVARCHAR(15)
 );
+
+-- Orders table
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1,1),
+    OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
