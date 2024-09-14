@@ -1,4 +1,4 @@
--- Database Design
+-- 1. Database Design
 
 -- Tables for `Products`, `Orders`, `OrderItems`, `Customers`.
 -- Products table
@@ -37,7 +37,7 @@ CREATE TABLE OrderItems (
 );
 
 ----------------------------------------------------------
--- SQL Queries
+-- 2. SQL Queries
 
 -- 1. Retrieve all orders and their associated customer details:
 SELECT 
@@ -81,3 +81,26 @@ UPDATE OrderItems
 SET UnitPrice = 99.99
 WHERE ProductID = 1;
 
+-------------------------------------------------------------------
+-- 3. Stored Procedures
+
+--Create a stored procedure to return a customer's order history with product details:
+CREATE PROCEDURE GetCustomerOrderHistory
+    @CustomerID INT
+AS
+BEGIN
+    SELECT 
+        Orders.OrderID, 
+        Orders.OrderDate, 
+        Products.ProductName, 
+        OrderItems.Quantity, 
+        OrderItems.UnitPrice
+    FROM 
+        Orders
+    JOIN 
+        OrderItems ON Orders.OrderID = OrderItems.OrderID
+    JOIN 
+        Products ON OrderItems.ProductID = Products.ProductID
+    WHERE 
+        Orders.CustomerID = @CustomerID;
+END;
