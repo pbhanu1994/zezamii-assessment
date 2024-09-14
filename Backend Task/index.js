@@ -43,6 +43,13 @@ app.put("/users/:id", (req, res) => {
   res.json(user);
 });
 
+// Delete (DELETE) - Remove a user by id
+app.delete("/users/:id", (req, res) => {
+  const userId = req.params.id;
+  users = users.filter((u) => u.id !== parseInt(userId));
+  res.status(204).end();
+});
+
 // Starting the Server
 const PORT = 3000;
 app.listen(PORT, () => {
