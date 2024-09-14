@@ -35,3 +35,21 @@ CREATE TABLE OrderItems (
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 );
+
+----------------------------------------------------------
+-- SQL Queries
+
+-- 1. Retrieve all orders and their associated customer details:
+SELECT 
+    Orders.OrderID, 
+    Orders.OrderDate, 
+    Customers.CustomerID, 
+    Customers.CustomerName, 
+    Customers.Email, 
+    Customers.Phone
+FROM 
+    Orders
+JOIN 
+    Customers ON Orders.CustomerID = Customers.CustomerID;
+
+
