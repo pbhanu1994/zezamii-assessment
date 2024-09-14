@@ -20,6 +20,17 @@ app.get("/users", (req, res) => {
   res.json(users);
 });
 
+// Read (GET) - GET a specific user by id
+app.get("/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const user = users.find((u) => u.id === parseInt(userId));
+  if (!user) {
+    return res.status(404).json({ error: `User not found with id: ${userId}` });
+  }
+  res.json(user);
+});
+
+// Starting the Server
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
