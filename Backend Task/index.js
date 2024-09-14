@@ -15,6 +15,11 @@ app.post("/users", (req, res) => {
   res.status(201).json(newUser);
 });
 
+// Read (GET) - Get all users
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
