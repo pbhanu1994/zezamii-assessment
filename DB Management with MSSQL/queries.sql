@@ -71,5 +71,13 @@ HAVING
     MAX(Orders.OrderDate) IS NULL
     OR MAX(Orders.OrderDate) < DATEADD(DAY, -30, GETDATE()); 
 
-
+-- 3. Update a product’s price and reflect that change in current orders:
+-- updating the new price (99.99) of the product (productId 1)
+UPDATE Products
+SET Price = 99.99
+WHERE ProductID = 1;
+-- updating the UnitPrice in all orders where the product is included
+UPDATE OrderItems
+SET UnitPrice = 99.99
+WHERE ProductID = 1;
 
