@@ -6,9 +6,18 @@ app.use(express.json());
 let users = [];
 let userId = 1;
 
+// Input validation middleware
+const validateUser = (req, res, next) => {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ error: "Name and Email are required" });
+  }
+  next();
+};
+
 /* CRUD Operation */
 // Create (POST) - Add a new user
-app.post("/users", (req, res) => {
+app.post("/users", validateUser, (req, res) => {
   const { name, email } = req.body;
   const newUser = { id: userId++, name, email };
   users.push(newUser);
@@ -31,7 +40,7 @@ app.get("/users/:id", (req, res) => {
 });
 
 // Update (PUT) - Update an existing user by id
-app.put("/users/:id", (req, res) => {
+app.put("/users/:id", validateUser, (req, res) => {
   const userId = req.params.id;
   const user = users.find((u) => u.id === parseInt(userId));
   if (!user) {
