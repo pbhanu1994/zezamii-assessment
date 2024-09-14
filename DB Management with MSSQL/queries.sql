@@ -52,4 +52,24 @@ FROM
 JOIN 
     Customers ON Orders.CustomerID = Customers.CustomerID;
 
+-- 2. Retrieve a list of products not ordered in the last 30 days.
+SELECT 
+    Products.ProductID, 
+    Products.ProductName, 
+    Products.Price
+FROM 
+    Products
+LEFT JOIN 
+    OrderItems ON Products.ProductID = OrderItems.ProductID
+LEFT JOIN 
+    Orders ON OrderItems.OrderID = Orders.OrderID
+GROUP BY 
+    Products.ProductID, 
+    Products.ProductName, 
+    Products.Price
+HAVING 
+    MAX(Orders.OrderDate) IS NULL
+    OR MAX(Orders.OrderDate) < DATEADD(DAY, -30, GETDATE()); 
+
+
 
