@@ -24,3 +24,14 @@ CREATE TABLE Orders (
     CustomerID INT,
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
+
+-- OrderItems table
+CREATE TABLE OrderItems (
+    OrderItemID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT,
+    ProductID INT,
+    Quantity INT NOT NULL,
+    UnitPrice DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
