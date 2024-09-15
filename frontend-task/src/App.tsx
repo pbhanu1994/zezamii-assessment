@@ -1,12 +1,23 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { useState } from "react";
+import { Container, TextField, Typography } from "@mui/material";
 
-const App = () => {
+const App: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   return (
-    <div className="App">
-      <header className="App-header">Zezamii Test App</header>
-    </div>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Product List
+      </Typography>
+      <TextField
+        label="Search Products"
+        variant="outlined"
+        fullWidth
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ marginBottom: "20px" }}
+      />
+    </Container>
   );
 };
 
