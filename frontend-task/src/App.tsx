@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Container,
   TextField,
@@ -9,15 +8,8 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-
-// Define the product type
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  thumbnail: string;
-}
+import { Product } from "./types/Product";
+import getProducts from "./services/services";
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,21 +18,20 @@ const App: React.FC = () => {
 
   // Fetch the products from the API
   useEffect(() => {
-    axios
-      .get("https://dummyjson.com/products")
-      .then((response) => {
-        setProducts(response.data.products);
-        setFilteredProducts(response.data.products);
-      })
-      .catch((error) => {
-        console.error("Error fetching data", error);
-      });
+    const fetchProducts = async () => {
+      const products: Product[] = await getProducts();
+
+      setProducts(products);
+      setFilteredProducts(products);
+    };
+
+    fetchProducts();
   }, []);
 
   // Filter products based on search term
   useEffect(() => {
-    const filtered = products.filter((product) =>
-      product.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered = products.filter(({ title }) =>
+      title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
@@ -59,29 +50,31 @@ const App: React.FC = () => {
         style={{ marginBottom: "20px" }}
       />
       <Grid container spacing={3}>
-        {filteredProducts.map((product) => (
-          <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <Card sx={{ maxWidth: 345 }}>
-              <CardMedia
-                component="img"
-                alt={`img-${product.title}`}
-                height="140"
-                image={product.thumbnail}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {product.title}
-                </Typography>
-                <Typography gutterBottom variant="h6" component="div">
-                  ${product.price}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {product.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+        {filteredProducts.map(
+          ({ id, title, description, price, thumbnail }) => (
+            <Grid item xs={12} sm={6} md={4} key={id}>
+              <Card sx={{ maxWidth: 345, height: 380 }}>
+                <CardMedia
+                  component="img"
+                  alt={`img-${title}`}
+                  height="140"
+                  image={thumbnail}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {title}
+                  </Typography>
+                  <Typography gutterBottom variant="h6" component="div">
+                    ${price}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    {description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        )}
       </Grid>
     </Container>
   );
