@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Grid, Typography, Container } from "@mui/material";
-import { PAGE_PATH } from "../constants/navigationConstants";
+import { PAGE_PATH } from "../../constants/navigationConstants";
 
 const Home: React.FC = () => {
   const heading = "Zezamii Frontend Task";

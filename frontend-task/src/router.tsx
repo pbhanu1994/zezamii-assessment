@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { PAGE_PATH } from "./constants/navigationConstants";
-import Home from "./components/Home";
+import Home from "./components/Home/Home";
 import Products from "./components/Products/Products";
 
 const router = createBrowserRouter([
