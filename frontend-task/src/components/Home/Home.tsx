@@ -23,6 +23,7 @@ const Home: React.FC = () => {
             variant="contained"
             size="large"
             color="primary"
+            aria-label="Continue to products"
           >
             Continue
           </Button>
