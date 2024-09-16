@@ -7,22 +7,30 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  Box,
+  CircularProgress,
 } from "@mui/material";
 import { Product } from "./types/Product";
-import getProducts from "./services/services";
+import getProducts from "./services/products";
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Fetch the products from the API
   useEffect(() => {
     const fetchProducts = async () => {
-      const products: Product[] = await getProducts();
-
-      setProducts(products);
-      setFilteredProducts(products);
+      try {
+        const products: Product[] = await getProducts();
+        setProducts(products);
+        setFilteredProducts(products);
+      } catch (error) {
+        console.error("Error fetching products", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchProducts();
@@ -36,9 +44,24 @@ const App: React.FC = () => {
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
+    <Container sx={{ paddingTop: 4 }}>
+      <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
         Product List
       </Typography>
       <TextField
@@ -47,33 +70,84 @@ const App: React.FC = () => {
         fullWidth
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ marginBottom: "20px" }}
+        sx={{ marginBottom: "30px" }}
       />
-      <Grid container spacing={3}>
-        {filteredProducts.map(
-          ({ id, title, description, price, thumbnail }) => (
-            <Grid item xs={12} sm={6} md={4} key={id}>
-              <Card sx={{ maxWidth: 345, height: 380 }}>
-                <CardMedia
-                  component="img"
-                  alt={`img-${title}`}
-                  height="140"
-                  image={thumbnail}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {title}
-                  </Typography>
-                  <Typography gutterBottom variant="h6" component="div">
-                    ${price}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+      <Typography variant="h5" gutterBottom>
+        Showing {filteredProducts.length} product
+        {filteredProducts.length === 1 ? "" : "s"}
+      </Typography>
+      <Grid container spacing={4}>
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map(
+            ({ id, title, description, price, thumbnail }) => (
+              <Grid item xs={12} sm={6} md={4} key={id}>
+                <Card
+                  sx={{
+                    maxWidth: 345,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                    transition: "transform 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                      boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+                    },
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    alt={`img-${title}`}
+                    height="200"
+                    image={thumbnail}
+                    sx={{
+                      objectFit: "contain",
+                      padding: "20px",
+                      backgroundColor: "#f9f9f9",
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="div"
+                      sx={{ fontWeight: 600 }}
+                    >
+                      {title}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="div"
+                      sx={{ color: "primary.main", fontWeight: 500 }}
+                    >
+                      ${price.toFixed(2)}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        height: 100,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )
           )
+        ) : (
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ paddingTop: 14, textAlign: "center", width: "100%" }}
+          >
+            No Products found
+          </Typography>
         )}
       </Grid>
     </Container>

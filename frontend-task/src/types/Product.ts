@@ -32,7 +32,7 @@ export interface Product {
   thumbnail: string;
 }
 
-export interface Review {
+interface Review {
   rating: number;
   comment: string;
   date: string;
