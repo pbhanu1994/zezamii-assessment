@@ -65,8 +65,13 @@ const Products: React.FC = () => {
   };
 
   return (
-    <Container sx={{ paddingTop: 4 }}>
-      <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
+    <Container sx={{ marginY: 8 }}>
+      <Typography
+        variant="h3"
+        gutterBottom
+        sx={{ textAlign: "center" }}
+        color="primary"
+      >
         Product List
       </Typography>
       <TextField
@@ -135,7 +140,7 @@ const Products: React.FC = () => {
                       gutterBottom
                       variant="h6"
                       component="div"
-                      sx={{ color: "primary.main", fontWeight: 500 }}
+                      sx={{ color: "secondary.main", fontWeight: 500 }}
                     >
                       ${price.toFixed(2)}
                     </Typography>
