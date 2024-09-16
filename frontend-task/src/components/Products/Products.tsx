@@ -7,6 +7,7 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  Pagination,
 } from "@mui/material";
 import { ProductsLoading } from "./ProductsLoading";
 import { Product } from "../../types/Product";
@@ -17,6 +18,9 @@ const Products: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const PRODUCTS_PER_PAGE = 10;
 
   // Fetch the products from the API
   useEffect(() => {
@@ -41,7 +45,24 @@ const Products: React.FC = () => {
       title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredProducts(filtered);
+    setCurrentPage(1);
   }, [searchTerm, products]);
+
+  const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
+  const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setCurrentPage(value);
+  };
 
   return (
     <Container sx={{ paddingTop: 4 }}>
@@ -56,15 +77,23 @@ const Products: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         sx={{ marginBottom: "30px" }}
       />
-      <Typography variant="h5" gutterBottom>
-        Showing {filteredProducts.length} product
-        {filteredProducts.length === 1 ? "" : "s"}
-      </Typography>
+      {currentProducts.length > 0 && (
+        <Grid container justifyContent="space-between">
+          <Typography variant="h6" gutterBottom>
+            Showing {currentProducts.length} product
+            {currentProducts.length === 1 ? "" : "s"}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Page {currentPage}/
+            {Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE)}
+          </Typography>
+        </Grid>
+      )}
       <Grid container spacing={4}>
         {loading ? (
           <ProductsLoading />
-        ) : filteredProducts.length > 0 ? (
-          filteredProducts.map(
+        ) : currentProducts.length > 0 ? (
+          currentProducts.map(
             ({ id, title, description, price, thumbnail }) => (
               <Grid item xs={12} sm={6} md={4} key={id}>
                 <Card
@@ -136,6 +165,14 @@ const Products: React.FC = () => {
           </Typography>
         )}
       </Grid>
+      {!loading && filteredProducts.length > PRODUCTS_PER_PAGE && (
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          sx={{ marginTop: 4, display: "flex", justifyContent: "center" }}
+        />
+      )}
     </Container>
   );
 };
