@@ -7,7 +7,14 @@ export const ProductsLoading = () => {
   return (
     <React.Fragment>
       {skeletonArray.map((_, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          key={index}
+          aria-label={`productLoading-${index}`}
+        >
           <Card
             sx={{
               maxWidth: 345,
