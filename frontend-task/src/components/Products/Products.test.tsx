@@ -59,4 +59,26 @@ describe("Products Component", () => {
     expect(screen.queryByText("Product 2")).not.toBeInTheDocument();
     expect(screen.queryByText("Product 3")).not.toBeInTheDocument();
   });
+
+  // Displaying "No Products found" message when there are no products on given title
+  test("shows no products found message when no products match", async () => {
+    render(<Products />);
+
+    // Wait for products to be displayed
+    await waitFor(() => {
+      expect(screen.getByText("Product 1")).toBeInTheDocument();
+      expect(screen.getByText("Product 2")).toBeInTheDocument();
+      expect(screen.getByText("Product 3")).toBeInTheDocument();
+    });
+
+    // Filtering products with wrong product title
+    fireEvent.change(screen.getByLabelText(/Search Products/i), {
+      target: { value: "Product 19" },
+    });
+
+    // Wait for the "No Products found" message to be displayed
+    await waitFor(() => {
+      expect(screen.getByText(/No Products found/i)).toBeInTheDocument();
+    });
+  });
 });
