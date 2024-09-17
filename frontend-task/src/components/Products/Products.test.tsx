@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { ProductsLoading } from "./ProductsLoading";
 import Products from "./Products";
@@ -36,5 +36,27 @@ describe("Products Component", () => {
       expect(screen.getByText("Product 2")).toBeInTheDocument();
       expect(screen.getByText("Product 3")).toBeInTheDocument();
     });
+  });
+
+  // Testing the Products - filtering products based on search term
+  test("filters products based on search term", async () => {
+    render(<Products />);
+
+    // Wait for products to be displayed
+    await waitFor(() => {
+      expect(screen.getByText("Product 1")).toBeInTheDocument();
+      expect(screen.getByText("Product 2")).toBeInTheDocument();
+      expect(screen.getByText("Product 3")).toBeInTheDocument();
+    });
+
+    // Filtering products
+    fireEvent.change(screen.getByLabelText(/Search Products/i), {
+      target: { value: "Product 1" },
+    });
+
+    // Checking if only Product 1 is displayed
+    expect(screen.getByText("Product 1")).toBeInTheDocument();
+    expect(screen.queryByText("Product 2")).not.toBeInTheDocument();
+    expect(screen.queryByText("Product 3")).not.toBeInTheDocument();
   });
 });
